@@ -1,34 +1,58 @@
-export function PenalBlock() {
+const NEWS = [
+  {
+    emoji: "🐶",
+    medio: "HuffPost",
+    titular: "La foto de radar más surrealista: parecía que el perro conducía",
+    resumen:
+      "La fotografía captada por el radar mostraba a un perro ocupando gran parte del asiento del conductor, generando una imagen viral que parecía mostrar al animal conduciendo.",
+  },
+  {
+    emoji: "🏘️",
+    medio: "El País Motor",
+    titular: "Un radar puso más de 4.000 multas al día en un pueblo de 120 habitantes",
+    resumen:
+      "Un pequeño municipio instaló un radar que terminó registrando decenas de miles de infracciones en pocas semanas.",
+  },
+  {
+    emoji: "🏎️",
+    medio: "La Vanguardia",
+    titular: "Un radar detectó un coche a 413 km/h",
+    resumen:
+      "Una velocidad extraordinaria captada por un radar generó enorme repercusión mediática por superar ampliamente los registros habituales.",
+  },
+];
+
+export function NewsCards() {
   return (
     <section className="px-6 py-20">
-      <div className="mx-auto max-w-4xl">
-        <div className="glass rounded-3xl border-l-4 border-l-slate-900 p-8 shadow-elegant md:p-10">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-3xl" aria-hidden>⚖️</span>
-            <h2 className="text-2xl font-bold md:text-3xl">Artículo 379 del Código Penal</h2>
-          </div>
-          <p className="mt-5 text-base leading-relaxed text-foreground/90">
-            Superar en más de <strong>60 km/h</strong> el límite en vía urbana
-            o más de <strong>80 km/h</strong> el límite en vía interurbana puede
-            constituir <strong>delito contra la seguridad vial</strong>.
-          </p>
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Posibles penas
-            </h3>
-            <ul className="mt-3 grid gap-2 text-sm md:grid-cols-2">
-              {[
-                "Prisión de 3 a 6 meses",
-                "Multa de 6 a 12 meses",
-                "Trabajos en beneficio de la comunidad",
-                "Retirada del permiso de conducir",
-              ].map((p) => (
-                <li key={p} className="flex items-start gap-2 rounded-xl bg-white/50 px-4 py-3">
-                  <span className="mt-0.5 text-primary">▸</span> {p}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="mx-auto max-w-6xl">
+        <header className="mb-10 text-center">
+          <h2 className="text-3xl font-bold md:text-4xl">Curiosidades sobre radares y multas</h2>
+          <p className="mt-3 text-muted-foreground">Tres historias reales que se hicieron virales.</p>
+        </header>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {NEWS.map((n) => (
+            <article
+              key={n.titular}
+              className="paper-card rounded-2xl p-6 transition hover:-translate-y-1"
+              style={{ color: "var(--paper-ink)" }}
+            >
+              <div className="flex items-center justify-between border-b border-current/20 pb-3">
+                <span className="text-3xl" aria-hidden>{n.emoji}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-widest opacity-70">
+                  {n.medio}
+                </span>
+              </div>
+              <h3
+                className="mt-4 text-xl font-bold leading-snug"
+                style={{ fontFamily: "var(--font-serif)" }}
+              >
+                {n.titular}
+              </h3>
+              <p className="mt-3 text-sm opacity-80">{n.resumen}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>

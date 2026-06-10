@@ -1,47 +1,77 @@
-export const FAQ_ITEMS = [
-  {
-    q: "¿Cuánto es la multa por ir a 70 km/h en una zona de 50?",
-    a: "Es una infracción leve: 100 € de multa (50 € con pronto pago) y no implica pérdida de puntos del carnet.",
-  },
-  {
-    q: "¿Cuánto es la multa por ir a 150 km/h en autopista?",
-    a: "En una vía con límite de 120 km/h se considera infracción leve: 100 € (50 € con pronto pago) y 0 puntos.",
-  },
-  {
-    q: "¿Cuántos puntos se pierden por exceso de velocidad?",
-    a: "Entre 0 y 6 puntos según el tramo: 0 en infracciones leves, 2/4/6 en graves y 6 en muy graves.",
-  },
-  {
-    q: "¿Existe descuento por pronto pago?",
-    a: "Sí, las sanciones económicas tienen una reducción del 50% si se abonan en los 20 días naturales siguientes a la notificación.",
-  },
-  {
-    q: "¿Cuándo puede ser delito penal?",
-    a: "Cuando se supera el límite en más de 60 km/h en vía urbana o más de 80 km/h en vía interurbana (Art. 379.1 CP).",
-  },
-];
+import { useState } from "react";
+import { SPEED_LIMITS, calculateFine, type FineResult } from "@/lib/fines";
+import { ResultCard } from "./ResultCard";
 
-export function Faq() {
+export function Calculator() {
+  const [limit, setLimit] = useState<number>(90);
+  const [detected, setDetected] = useState<string>("");
+  const [result, setResult] = useState<FineResult | null>(null);
+
+  const handleCalc = (e: React.FormEvent) => {
+    e.preventDefault();
+    const d = parseInt(detected, 10);
+    if (!d || d < 0) return;
+    setResult(calculateFine(limit, d));
+  };
+
   return (
-    <section className="px-6 py-20">
+    <section id="calculadora" className="relative -mt-20 px-6 pb-20">
       <div className="mx-auto max-w-3xl">
-        <header className="mb-10 text-center">
-          <h2 className="text-3xl font-bold md:text-4xl">Preguntas frecuentes</h2>
-        </header>
-        <div className="space-y-3">
-          {FAQ_ITEMS.map((item) => (
-            <details
-              key={item.q}
-              className="glass group rounded-2xl p-5 transition open:shadow-elegant"
-            >
-              <summary className="flex cursor-pointer items-center justify-between gap-4 text-base font-semibold">
-                {item.q}
-                <span className="text-primary transition group-open:rotate-45">+</span>
-              </summary>
-              <p className="mt-3 text-sm text-muted-foreground">{item.a}</p>
-            </details>
-          ))}
+        <div className="glass rounded-3xl p-6 shadow-elegant md:p-10">
+          <h2 className="text-2xl font-bold md:text-3xl">Calculadora de multa</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Introduce el límite de la vía y la velocidad detectada por el radar.
+          </p>
+
+          <form onSubmit={handleCalc} className="mt-8 grid gap-5 md:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 flex items-center gap-2 text-sm font-medium">
+                <span aria-hidden>🚦</span> Velocidad máxima permitida
+              </span>
+              <select
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+                className="w-full rounded-xl border border-border bg-white/70 px-4 py-3 text-base font-medium outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15"
+              >
+                {SPEED_LIMITS.map((l) => (
+                  <option key={l} value={l}>{l} km/h</option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block">
+              <span className="mb-2 flex items-center gap-2 text-sm font-medium">
+                <span aria-hidden>🚗</span> Velocidad detectada
+              </span>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={400}
+                value={detected}
+                onChange={(e) => setDetected(e.target.value)}
+                placeholder="Ej: 138"
+                className="w-full rounded-xl border border-border bg-white/70 px-4 py-3 text-base font-medium outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15"
+              />
+            </label>
+
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                disabled={!detected}
+                className="w-full rounded-xl bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground shadow-elegant transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Calcular multa
+              </button>
+            </div>
+          </form>
         </div>
+
+        {result && (
+          <div className="mt-6">
+            <ResultCard result={result} />
+          </div>
+        )}
       </div>
     </section>
   );
